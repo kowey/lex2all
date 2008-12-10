@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- Simplified DTD for Tree Adjoining Grammars Encoding
+
+     Authors: ARC RLT members
+     Organization : LORIA
+     Contact: Azim.Roussanaly@loria.fr
+
+     Description:
+       XML Encoding of Tree Adjoining Grammars Encoding based on the
+       version 2.01d with somme restrictions :
+       - for Feature structures, see the restricted DTD fs.dtd (version 0.01b)
+       - other restrictions or modifications:
+         . element admin becomes #PCDATA (instead of ANY) (reason: jaxb software limitation)
+         . node attribute of anchor and equation elements are renamed as noderef
+         . nb : noderef attribute is a local reference to a node name (not a XPointer)
+         . all copyof attribute are IDREF type (equation, family, tree elements)
+         . content elements of tree element can be empty (case of copyof)
+         . content elements of equation element can be empty (case of copyof)
+         . all id attribute of family and tree elements are implied
+         . content of morph element is replaced by (fs?,lemmaref+) (instead of adminGrp?, lemmaref+)
+
+     Acknowledgment:
+     See fs001a.dtd of the ARC RLT <http://atoll.inria.fr/~clerger/RLT>
+
+     Version: 2.O01b
+     Last modification: 01/09/02
+
+     Typical usage:  to describe syntactic and lexical resources for a TAG Parser.
+-->
+
+<!-- ==============   BEGIN ENTITIES  ================================ -->
+<!ENTITY % TAG.Version "-//INRIA//DTD TAG 2.01b//EN">
+
+                                                 <!-- Local attributes -->
+<!ENTITY % a.Lib   'type CDATA #IMPLIED
+                    id   ID    #IMPLIED' >
+
+                                                 <!-- Local attribute types-->
+<!ENTITY % node.nargs '( top | bot )'>
+<!ENTITY % cat.type   'CDATA'>
+<!ENTITY % lex.type   'CDATA'>
+<!ENTITY % node.type  '( std | subst | lex | anchor | foot )'>
+<!ENTITY % adj.type   '( yes | no | strict | multiple)'>
+<!ENTITY % adj.kind   '( wrapping | left | right | left_right)'>
+
+                                                 <!-- Fs Library -->
+<!-- ==============   EXTERNAL DTD  ================================ -->
+<!ENTITY % FSLIB SYSTEM  "fs.dtd" >
+%FSLIB;
+
+<!-- ==============   BEGIN ELEMENTS  ================================ -->
+                                                 <!-- The root element -->
+<!ELEMENT  tagml  (adminGrp?, ( 
+                               lexicalization|lexicalizationLib|
+                                morph|morphLib|
+                                tree|treeLib|
+                                family|familyLib|
+                                equation|equationLib|    
+                                fs|fsLib
+                              )*)>
+
+                                                 <!-- Morphological entries in lexicon -->
+<!ELEMENT  morph             (fs?,lemmaref+)>
+<!ATTLIST  morph             lex   %lex.type; #REQUIRED>
+<!ELEMENT  morphLib          (morph+)>
+<!ATTLIST  morphLib          %a.Lib; >
+
+                                                 <!-- References to lemma entries in morph entries -->
+<!ELEMENT  lemmaref          (fs?)>
+<!ATTLIST  lemmaref          name   CDATA   #REQUIRED
+                             cat    %cat.type;   #REQUIRED>
+
+                                                 <!-- Anchoring constraints in lemma -->
+<!ELEMENT  lexicalization    ((family|tree)+,anchor+, equation*)>
+<!ELEMENT  lexicalizationLib (lexicalization+)>
+<!ATTLIST  lexicalizationLib %a.Lib; >
+
+                                                 <!-- Lexical constraint in anchors -->
+<!ELEMENT  anchor            (lemmaref+)>
+<!ATTLIST  anchor            noderef   CDATA   #REQUIRED
+                             priority  CDATA   #IMPLIED>
+
+                                                 <!-- Unification constraint in anchors -->
+<!ELEMENT  equation          (fs?)>
+<!ATTLIST  equation          type    %node.nargs;   #REQUIRED
+                             noderef CDATA          #REQUIRED
+                             id      ID             #IMPLIED
+                             copyof  IDREF          #IMPLIED>  
+<!ELEMENT  equationLib       (equation+)>
+<!ATTLIST  equationLib       %a.Lib; >
+
+                                                 <!-- A family group a set of trees                      -->
+                                                 <!-- it may be identied by its id or by its attached fs -->
+<!ELEMENT  family            (adminGrp?,fs?,tree*)>
+<!ATTLIST  family            id   ID   #IMPLIED
+                             copyof IDREF #IMPLIED>
+<!ELEMENT familyLib          (family+)>
+<!ATTLIST familyLib          %a.Lib; >
+
+                                                 <!-- A tree contains a recursive node element           -->
+                                                 <!-- it may be identied by its id or by its attached fs -->
+<!ELEMENT  tree              (adminGrp?,fs?,node?)>
+<!ATTLIST  tree              id   ID   #IMPLIED
+                             copyof IDREF #IMPLIED>
+<!ELEMENT  treeLib           (tree+)>
+<!ATTLIST  treeLib           %a.Lib; >
+
+                                                 <!-- A node -->
+<!ELEMENT  node              (narg*,node*)>
+<!ATTLIST  node              cat   %cat.type;      #IMPLIED
+                             lex   %lex.type;      #IMPLIED
+                             type  %node.type;     #REQUIRED
+                             name  CDATA           #IMPLIED
+                             adjkind %adj.kind;    #IMPLIED
+                             adj   %adj.type;      #IMPLIED>
+
+
+                                                 <!-- A node argument is an                -->
+                                                 <!-- unification constraints on on a node -->
+<!ELEMENT  narg  (fs)>
+<!ATTLIST  narg  type        %node.nargs;   #REQUIRED>
+
+                                                 <!-- Description  -->
+<!ELEMENT  adminGrp          (admin)+>
+<!ATTLIST  admin             type CDATA #REQUIRED>
+
+<!ELEMENT admin              (#PCDATA)>
+
+<!-- ==============   END OF DTD  ================================ -->

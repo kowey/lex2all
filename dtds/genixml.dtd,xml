@@ -1,0 +1,87 @@
+<!-- XML Document Type Definition 
+
+     Authors: 
+       Yannick Parmentier <Yannick.Parmentier@loria.fr>
+ 
+     Description:
+       XML Encoding of GenI lexicon
+
+     Version: 1.0
+
+     Typical usage:  
+
+            <?xml version="1.0" encoding="iso-8859-1"?>
+	    <lexicon>
+            ...
+            </lexicon>
+
+-->
+
+<!-- lexicon -->
+
+<!ELEMENT  lexicon (lemmas?)>
+
+<!-- entries -->
+
+<!ELEMENT  lemmas  (lemma*)>
+
+<!-- lemma entry -->
+
+<!ELEMENT  lemma  (equations?, coanchors?, interface?, filter?, semantics?)>
+<!ATTLIST  lemma   name   CDATA   #REQUIRED
+                   family CDATA   #REQUIRED>      
+
+<!-- equations -->
+
+<!ELEMENT  equations  (equation*)>
+
+<!-- anchoring equation -->
+
+<!ELEMENT  equation  (fs?)>
+<!ATTLIST  equation   node_id   CDATA   #REQUIRED
+	   	      type	CDATA	#REQUIRED>
+
+<!-- coanchors -->
+
+<!ELEMENT  coanchors  (coanchor?)>
+
+<!-- coanchoring -->
+
+<!ELEMENT  coanchor  (fs?)>
+<!ATTLIST  coanchor  node_id   CDATA   #REQUIRED
+	   	     type      CDATA   #REQUIRED>
+
+<!-- interface -->
+
+<!ELEMENT  interface  (fs?)>
+
+<!-- filters to select trees -->
+
+<!ELEMENT  filter  (fs?)>
+
+<!-- syntax/semantic interface in the lemma lexicon -->
+
+<!ELEMENT  semantics	(literal*)>
+
+<!-- literal -->
+
+<!ELEMENT  literal	(args)>
+<!ATTLIST  literal 	label		CDATA	#REQUIRED
+	   		predicate	CDATA	#REQUIRED>
+
+<!-- list of arguments for the instantiation -->
+
+<!ELEMENT args (sym*)>
+
+<!-- features -->
+
+<!ELEMENT  fs  (f*)>
+
+<!ELEMENT  f  (sym | vAlt | fs)>
+<!ATTLIST  f  name  CDATA #REQUIRED>
+
+<!ELEMENT  vAlt  (sym+)>
+
+<!ELEMENT  sym EMPTY>
+<!ATTLIST  sym value   CDATA #IMPLIED
+	       varname CDATA #IMPLIED>

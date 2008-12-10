@@ -1,0 +1,186 @@
+<!-- XML Document Type Definition 
+
+     Authors: 
+       Linda Kaouane <Linda.Kaouane@inria.fr>
+       Eric de la Clergerie <Eric.De_La_Clergerie@inria.fr>
+ 
+     Description:
+       XML Encoding of Tree Adjoining Grammars
+
+     Acknowledgment:
+        This DTD derives from one written by Patrice Lopez <lopez@dfki.de>
+
+     Version: 1.0
+
+     Typical usage:  
+
+            <!DOCTYPE tag 
+                PUBLIC "-//INRIA//DTD TAG 1.0//EN"
+                "http://atoll.inria.fr/~clerger/tag.dtd,xml"
+                >
+            <tag>
+            ...
+            </tag>
+
+     Notes:
+        
+        A Tree Adjoining Grammars provides elementary Trees grouped
+        into Families, Lexicon entries, and Lemma entries
+
+        - A tree family groups several trees (at least one)
+        - Each tree family has an unique identifier
+
+        - A tree belongs to a most one family
+        - Each tree has an unique identifier
+
+        - Each lexicon entry has an unique lexical value
+        - At least one lemma entry is attached to each lexicon entry
+
+        - Each lemma entry is unambiguously characterized by an
+        identifier and a syntactic category
+        - At least one anchoring constraint is attached to each lemma entry
+
+        - Each anchoring constraint refers to a least one family
+
+     Missing:
+
+        - templates for feature structures
+
+  
+     Extensions:
+
+        - a coanchoring constraint is restricted to a disjunction of
+        lexical values. One could also have lemmaref values and maybe
+        elementary trees with anchoring constraints (ie an anchor
+        constraint).
+        
+        - lemma could have a fs structure attached like lemmaref, and
+        lemma used where lemmaref are used.
+
+        - Allow multiple fs where a single one is expected. The
+        semantic would be to unify the different fs. It would be
+        coherent with the use of templates (corresponding to small fs).
+
+        - Reference to nodes could be done using explicit identifiers
+        or relative path
+
+        - possibility to share anchors, coanchors or equations between
+        different lemma (different kind of templates ?)
+
+-->
+
+<!ENTITY % TAG.Version "-//INRIA//DTD TAG 1.0//EN">
+
+<!-- Global attributes, cf TEI (teiclas2.ent)  -->
+
+<!ENTITY % INHERITED '#IMPLIED'                                 >
+
+<!ENTITY % a.global '   id       ID             #IMPLIED
+                        n        CDATA          #IMPLIED
+                        xml:lang IDREF          %INHERITED;
+                        rend     CDATA          #IMPLIED'       >
+
+<!ENTITY % tag.global ' lemmafile  CDATA        %INHERITED;
+                        familyfile CDATA        %INHERITED;
+                        lexfile    CDATA        %INHERITED;
+                        axiom      CDATA        "s" '    >
+
+<!-- Local attributes -->
+
+<!ENTITY % node.nargs '( top | bot )'>
+<!ENTITY % cat.type  'CDATA'>
+<!ENTITY % lex.type  'CDATA'>
+<!ENTITY % node.type  '( std | subst | lex | anchor | foot )'>
+<!ENTITY % adj.type  '( yes | no | strict )'>
+
+<!ELEMENT  tag  (desc*,(family|morph|lemma)*)>
+<!ATTLIST  tag  %tag.global;>
+
+<!-- morphological entries in lexicon -->
+
+<!ELEMENT  morph  (desc*,lemmaref+)>
+<!ATTLIST  morph   lex   %lex.type;   #REQUIRED>
+
+<!-- lemma entries -->
+
+<!ELEMENT  lemma  (desc*,anchor+)>
+<!ATTLIST  lemma   name   CDATA   #REQUIRED
+                   cat   %cat.type;   #REQUIRED>      
+
+<!-- references to lemma entries  in morp entries -->
+
+<!ELEMENT  lemmaref  (fs?)>
+<!ATTLIST  lemmaref   name   CDATA   #REQUIRED
+                      cat    %cat.type;   #REQUIRED
+                      %tag.global; >
+
+<!-- anchoring constraints in lemma -->
+
+<!ELEMENT  anchor  (coanchor*, equation*)>
+<!ATTLIST  anchor   tree_id   CDATA   #REQUIRED
+                    %tag.global;>
+
+<!-- lexical constraint in anchors -->
+
+<!ELEMENT  coanchor  (lex+)>
+<!ATTLIST  coanchor   node_id   CDATA   #REQUIRED>
+
+<!-- lexical value -->
+
+<!ELEMENT  lex  (#PCDATA)>
+
+<!-- unification constraint in anchors -->
+
+<!ELEMENT  equation  (fs)>
+<!ATTLIST  equation   type    %node.nargs;   #REQUIRED
+                      node_id  CDATA         #REQUIRED>
+
+<!-- trees grouped into families -->
+
+<!ELEMENT  family  (desc*,(tree|treeref)+)>
+<!ATTLIST  family   name   CDATA   #REQUIRED
+                    desc   CDATA   #IMPLIED>
+
+
+<!ELEMENT  tree  (desc*,(node+))>
+<!ATTLIST  tree  name   CDATA   #REQUIRED>
+
+<!ELEMENT treeref EMPTY>
+<!ATTLIST treeref name  CDATA   #REQUIRED>
+
+<!ELEMENT  node  (narg*,node*)>
+<!ATTLIST  node   cat   %cat.type;      #IMPLIED
+                  lex   %lex.type;      #IMPLIED
+                  type  %node.type;     #REQUIRED
+                  id    CDATA           #IMPLIED
+                  adj   %adj.type;      #IMPLIED>
+
+<!-- unification constraints on on a node -->
+
+<!ELEMENT  narg  (fs)>
+<!ATTLIST  narg  type    %node.nargs;   #REQUIRED>
+
+<!-- feature structure, inspired from TEI, chap. 16 -->
+                
+<!ELEMENT  fs  (f+)>
+
+<!ELEMENT  f  (plus | minus | val*)>
+<!ATTLIST  f   name   CDATA   #REQUIRED
+               id     CDATA   #IMPLIED>
+
+<!ELEMENT  minus  EMPTY>
+
+<!ELEMENT  plus   EMPTY>
+
+<!ELEMENT  val   (#PCDATA)>
+
+<!ELEMENT  link  EMPTY>
+<!ATTLIST  link  id   CDATA   #REQUIRED>
+
+<!-- Description  -->
+
+<!ELEMENT desc  (#PCDATA | p)*>
+<!ATTLIST desc  %a.global;    >
+
+
+
