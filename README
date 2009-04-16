@@ -7,31 +7,31 @@ LEX2ALL
 
 Contact: Y. Parmentier (yannick.parmentier@gmail.com)
 Version: 1.1
-Date: 25 Jan 2008
+Revision date: 15 April 2009
 
 
 Requirement
 -----------
 
-- a haskell compiler (preferably Glasgow Haskell Compiler, v. 6.6.1 and higher, 
+- a haskell compiler (preferably Glasgow Haskell Compiler, v. 6.8.3 or higher, 
     	    	      see http://www.haskell.org)
 
 
 Installation
 ------------
 
-- invoke "make", this will create the ./Converter executable file 
-- then invoke "make install" with root priviledges to install it (use option PREFIX to modify the installation directory (default: /usr/local/bin):
-       	        make PREFIX=/usr/local/somewhereElse
-)
+- just invoke the following:
+$ chmod u+x install.sh
+$ ./install.sh
 
+This script will check whether cabal is already installed, otherwise it will install it and then install lexConverter.
 
 Usage
 -----
 
 Converter: lexicon convertion program which can be used in 2 modes, convertion of lemma lexicons or morphological lexicons
 
-Usage: Converter [OPTION...] files...
+Usage: lexConverter [OPTION...] files...
         -v        --verbose        verbose output on stdin
         -H, -h    --help           show help
         -L        --lemmas         Converting mode -> lemmas
@@ -61,11 +61,3 @@ Licence
 -------
 
 Distributed under the terms of the CeCILL licence (see the Licence-fr and License-en files included and for more information http://www.cecill.info).
-
-
-Acknowledgements
-----------------
-
-This software uses the FilePath.hs code from Isaac Jones, included for convenience in the package but governed by its own license, see LICENSE-FilePath.hs
-
-This software also uses the UTF8.lhs code from Sven Moritz Hallberg, included for convenience in the package but governed by its own license, see UTF8.lhs

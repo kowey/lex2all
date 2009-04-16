@@ -29,10 +29,10 @@ import qualified Data.Map as Dict
 import Control.Exception
 import Data.Word (Word8)
 import Foreign.Marshal.Array (allocaArray, peekArray, pokeArray)
-import UTF8 (encode, decode)
+import qualified System.IO.UTF8 as U
 
--- Sources from http://scannedinavian.org/~lemmih/FilePath
-import FilePath
+import System.FilePath ( takeDirectory, isAbsolute )
+import System.Environment ( getEnv )
 
 main :: IO ()
 main = do 
@@ -52,18 +52,19 @@ main = do
                             hPutStr stderr findVersion
 	                    exitWith ExitSuccess
             else do
-	         let outputfile = findName "output" ol
-		     inputfile  = findName "input" ol
-		     mode       = findMode ol
-	             option     = findFormat ol
-		     verbose    = findFlag Verbose ol
-                     isLatin1   = findLatin1 ol
-		     (file, dir)= case inputfile of  Left  _ -> ("stdin", "")
-				                     Right f -> (f, dirname f)
-                     realOut    = case outputfile of Left _ -> "stdout"
-                                                     Right f -> f
+                 curdir <- getEnv ("PWD")
+	         let outputfile  = findName "output" ol
+		     inputfile   = findName "input" ol
+		     mode        = findMode ol
+	             option      = findFormat ol
+		     verbose     = findFlag Verbose ol
+                     recodeLatin1= findLatin1 ol
+		     (file, dir) = case inputfile of  Left  _ -> ("stdin", "")
+				                      Right f -> (f, takeDirectory (toAbsolutePath curdir f))
+                     realOut     = case outputfile of Left _ -> "stdout"
+                                                      Right f -> f
 	         time <- getClockTime
-                 input <- if (option == "tulipa" && (not isLatin1)) then readUTF8File file
+                 input <- if (option == "tulipa" && (not recodeLatin1)) then U.readFile file
                           else readFile file
 	         case mode of 'L' -> convertLex dir verbose pname option file input realOut time 
                               'M' -> convertMorph dir verbose pname option file input realOut time 
@@ -73,48 +74,10 @@ main = do
                  exitWith ExitSuccess
 
 
--- /******ADDED FOR UTF8 SUPPORT********/
-readUTF8File :: FilePath -> IO String
-readUTF8File f =
-    do fb <- readFileBytes f
-       case decode fb of (cs, []) -> return cs
-                         (_,  _ ) -> error "unknown encoding, make sure it is UTF8" --fail $ show xs
-
-writeUTF8File :: FilePath -> String -> IO ()
-writeUTF8File f cs =
-    do fb <- writeFileBytes f $ encode $ cs
-       return fb
-
-readFileBytes :: FilePath -> IO [Word8]
-readFileBytes f =
-    do h <- openBinaryFile f ReadMode
-       hsize <- fromIntegral `fmap` hFileSize h
-       hGetBytes h hsize
-
-writeFileBytes :: FilePath -> [Word8] -> IO ()
-writeFileBytes f ws =
-    do h <- openBinaryFile f WriteMode
-       hPutBytes h (length ws) ws
-       hClose h
-
-hGetBytes :: Handle -> Int -> IO [Word8]
-hGetBytes h c = 
-    allocaArray c $ \p ->
-        do c' <- hGetBuf h p c
-           peekArray c' p
-
-hPutBytes :: Handle -> Int -> [Word8] -> IO ()
-hPutBytes h c ws = 
-    allocaArray c $ \p ->
-        do pokeArray p ws
-           hPutBuf h p c
--- /*************************************/
-
-
 toAbsolutePath :: FilePath -> FilePath -> FilePath
 toAbsolutePath _ "" = ""
 toAbsolutePath parent path = 
-    if (head path) == '/' then path else parent ++ "/" ++ path
+    if (isAbsolute path) then path else parent ++ "/" ++ path
 
 
 parseInclude :: Parser ([Char], SourcePos, [String]) -> FilePath -> String -> ([Char], SourcePos, [String])
@@ -158,7 +121,7 @@ convertLex dir verbose pname option file input ohandle time =
     let printers = prettyLPrinters Dict.! option 
 	reslex   = ((lheader printers) time pname)++((lcontent printers) realLexicon time file "trees.xml" "lemma.xml" "lexicon.xml")
     --hPutStr ohandle reslex
-    if option == "tulipa" then writeUTF8File ohandle reslex
+    if option == "tulipa" then U.writeFile ohandle reslex
        else
            writeFile ohandle reslex
 
@@ -178,7 +141,7 @@ convertMorph dir verbose pname option file input ohandle time =
        let printers = prettyMPrinters Dict.! option 
 	   reslex   = ((mheader printers) time pname)++((mcontent printers) realLexicon time file "trees.xml" "lemma.xml" "lexicon.xml")
 	   in --hPutStr ohandle reslex
-             if option == "tulipa" then writeUTF8File ohandle reslex
+             if option == "tulipa" then U.writeFile ohandle reslex
                 else
                     writeFile ohandle reslex
 

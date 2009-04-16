@@ -1,0 +1,25 @@
+name:                lex2all
+version:             2.0
+synopsis:            Converter between various lexicon formats used in LORIA
+description:         Converter between various lexicon formats used in LORIA.
+                     .
+                     The formats include
+                     .
+                     * foo
+                     * bar (TODO)
+category:            Natural Language Processing
+license:             OtherLicense 
+license-file:        License-en
+author:              Yannick Parmentier
+maintainer:          <Yannick.Parmentier@loria.fr>
+build-Depends:       base
+                   , containers > 0.2 && < 0.3
+                   , filepath > 1.0   && < 1.2
+                   , old-time  > 1.0  && < 1.1
+                   , parsec > 2.0     && < 3
+                   , utf8-string >= 0.3 && < 0.4
+
+build-Type:          Simple
+
+executable:          lexConverter
+main-is:             Main.hs
