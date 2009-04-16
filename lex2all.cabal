@@ -12,8 +12,8 @@ license:             OtherLicense
 license-file:        License-en
 author:              Yannick Parmentier
 maintainer:          <Yannick.Parmentier@loria.fr>
-build-Depends:       base
-                   , containers > 0.2 && < 0.3
+build-Depends:       base < 4
+                   , containers > 0.1 && < 0.3
                    , filepath > 1.0   && < 1.2
                    , old-time  > 1.0  && < 1.1
                    , parsec > 2.0     && < 3
