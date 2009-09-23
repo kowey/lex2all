@@ -121,9 +121,7 @@ convertLex dir verbose pname option file input ohandle time =
     let printers = prettyLPrinters Dict.! option 
 	reslex   = ((lheader printers) time pname)++((lcontent printers) realLexicon time file "trees.xml" "lemma.xml" "lexicon.xml")
     --hPutStr ohandle reslex
-    if option == "tulipa" then U.writeFile ohandle reslex
-       else
-           writeFile ohandle reslex
+    writeFileFor option ohandle reslex
 
 
 convertMorph :: String -> Bool -> String -> String -> String -> String -> FilePath -> ClockTime -> IO() --Handle -> ClockTime -> IO ()
@@ -141,7 +139,11 @@ convertMorph dir verbose pname option file input ohandle time =
        let printers = prettyMPrinters Dict.! option 
 	   reslex   = ((mheader printers) time pname)++((mcontent printers) realLexicon time file "trees.xml" "lemma.xml" "lexicon.xml")
 	   in --hPutStr ohandle reslex
-             if option == "tulipa" then U.writeFile ohandle reslex
-                else
-                    writeFile ohandle reslex
+              writeFileFor option ohandle reslex
 
+writeFileFor :: String   -- ^ format
+             -> FilePath -- ^ file
+             -> String   -- ^ contents
+             -> IO ()
+writeFileFor "tulipa" = U.writeFile
+writeFileFor _ = writeFile
