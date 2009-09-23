@@ -27,3 +27,19 @@ build-Type:          Simple
 
 executable:          lexConverter
 main-is:             Main.hs
+other-modules: Dtypes
+             , Generic
+             , LexToDyalog
+             , LexToGeni
+             , LexToGeniXML
+             , LexToLLP2
+             , LexToTTMCTAG
+             , MacroProcessing
+             , MorphParser
+             , MorphToDyalog
+             , MorphToLLP2
+             , MorphToTTMCTAG
+             , Opts
+             , Parser
+             , PrettyPrinting
+             , XMLprint
