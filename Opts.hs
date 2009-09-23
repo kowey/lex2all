@@ -36,23 +36,12 @@ converterOpts progname argv =
 
 help :: String -> String
 help pname = 
+  usageInfo header options
+ where
+  header =
     "lexConverter \n\n"++pname++": lexicon convertion program which "
 	     ++"can be used in 2 modes, convertion of lemma lexicons or morphological lexicons.\n\n"
 	     ++"Usage: "++pname++" -i file [OPTION...] \n"
-	     ++"\t-v        --verbose        verbose output on stderr\n"
-	     ++"\t-w        --which          version number\n"
-	     ++"\t-H, -h    --help           show help\n"
-	     ++"\t-L        --lemmas         Converting mode -> lemmas\n"
-	     ++"\t-M        --morphs         Converting mode -> morphological items\n"
-             ++"\t-r        --recode         Define input encoding as being Latin1 (tulipa only)\n" 
-	     ++"\t-d        --dyalog         Output format: dyalog (Latin1)\n"
-	     ++"\t-l        --llp2           Output format: llp2 (latin1)\n"
-	     ++"\t-g        --geni           Output format: geni (Latin1)\n"
-	     ++"\t-x        --xml            Output format: XML (Latin1)\n"
-	     ++"\t-t        --tulipa         Output format: tulipa (UTF8)\n"
-	     ++"\t-o [FILE] --output[=FILE]  output FILE (default: stdout)\n"
-	     ++"\t-i [FILE] --input[=FILE]   input FILE (default: stdin)\n\n"
-
 
 findFlag :: Flag -> [Flag] -> Bool
 findFlag f ol = elem f ol
