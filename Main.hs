@@ -145,5 +145,6 @@ writeFileFor :: String   -- ^ format
              -> FilePath -- ^ file
              -> String   -- ^ contents
              -> IO ()
+writeFileFor "geni"   = U.writeFile
 writeFileFor "tulipa" = U.writeFile
 writeFileFor _ = writeFile
