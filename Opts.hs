@@ -18,7 +18,7 @@ options =
      , Option ['r']     ["recode"]  (NoArg Recode)        "Define input encoding as being Latin1 (tulipa only)"
      , Option ['d']     ["dyalog"]  (NoArg DyalogFormat)  "Output format: dyalog (Latin1)"
      , Option ['l']     ["llp2"]    (NoArg LLP2Format)    "Output format: llp2 (Latin1)"
-     , Option ['g']     ["geni"]    (NoArg GeniFormat)    "Output format: geni (Latin1)"
+     , Option ['g']     ["geni"]    (NoArg GeniFormat)    "Output format: geni (UTF8)"
      , Option ['x']     ["xml"]     (NoArg XMLFormat)     "Output format: XML (Latin1)"
      , Option ['t']     ["tulipa"]  (NoArg TTMCTAGFormat) "Output format: tulipa (UTF8)"
      , Option ['o']     ["output"]  (ReqArg Output "FILE")"Output FILE (default: stdout)"
