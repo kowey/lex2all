@@ -12,7 +12,7 @@ description:         Converter between various lexicon formats used for Natural 
                      * Tulipa
                      * XML (what kind?)
 category:            Natural Language Processing
-license:             OtherLicense 
+license:             GPL
 license-file:        License-en
 author:              Yannick Parmentier
 maintainer:          <Yannick.Parmentier@loria.fr>
