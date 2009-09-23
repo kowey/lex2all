@@ -1,7 +1,8 @@
 name:                lex2all
 version:             2.1
-synopsis:            Converter between various lexicon formats used in LORIA
-description:         Converter between various lexicon formats used in LORIA.
+synopsis:            Converter between various lexicon formats used for NLP
+description:         Converter between various lexicon formats used for Natural Language Processing,
+                     (both parsing and generation).
                      .
                      The formats include
                      .
