@@ -1,12 +1,15 @@
 name:                lex2all
-version:             2.0
+version:             2.1
 synopsis:            Converter between various lexicon formats used in LORIA
 description:         Converter between various lexicon formats used in LORIA.
                      .
                      The formats include
                      .
-                     * foo
-                     * bar (TODO)
+                     * DyALog
+                     * LLP2
+                     * GenI
+                     * Tulipa 
+                     * XML (what kind?)
 category:            Natural Language Processing
 license:             OtherLicense 
 license-file:        License-en
