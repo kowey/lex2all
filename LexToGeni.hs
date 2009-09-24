@@ -103,9 +103,7 @@ convertCoanchor (node,lex,cat) =
 
 
 convertFS :: FS -> String
-convertFS iface =
-    unwords (map convertAttVal iface)
-
+convertFS = unwords . map convertAttVal
 
 convertAttVal :: AVPair -> String
 convertAttVal (a,v) =
@@ -117,8 +115,7 @@ convertFil fam fil =
     "family:"++fam++" "++convertFS fil
 
 convertSem :: Sem -> String
-convertSem s =
-    concatMap convertLit s
+convertSem = concatMap convertLit
 
 
 convertLit :: Lit -> String
