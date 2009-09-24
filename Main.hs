@@ -58,8 +58,6 @@ import PrettyPrinting
 import Control.Monad
 import qualified Data.Map as Dict
 import Control.Exception
-import Data.Word (Word8)
-import Foreign.Marshal.Array (allocaArray, peekArray, pokeArray)
 import qualified System.IO.UTF8 as U
 
 import System.FilePath ( takeDirectory, isAbsolute )
