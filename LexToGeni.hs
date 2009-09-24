@@ -56,25 +56,24 @@ headerGeni t pname =
 
 
 formatLexGeni :: [LexEntry] -> String
-formatLexGeni lex =
-        let l = sort lex
-        in concatMap (\x -> convertEntry x) l
+formatLexGeni = concatMap convertEntry . sort
 
 convertEntry :: LexEntry -> String
 convertEntry e =
-    (lemma e)++" "++(family e)++"  "++(getParams e)++"\n"
+    lemma e ++" "++ family e ++"  "++ getParams e ++"\n"
     ++"equations:["
-    ++(concatMap (\x -> convertEqua x) (equations e))
-    ++(concatMap (\x -> convertCoanchor x) (coanchors e))
-    ++(convertFS (iface e))++"]\n"
-    ++"filters:["++(convertFil (family e) (filters e))++"]\n"
-    ++"semantics:["++(convertSem (sem e))++"]\n\n"
+    ++ concatMap convertEqua (equations e)
+    ++ concatMap convertCoanchor (coanchors e)
+    ++ convertFS (iface e) ++"]\n"
+    ++"filters:[" ++ convertFil (family e) (filters e) ++"]\n"
+    ++"semantics:[" ++ convertSem (sem e) ++"]\n\n"
 
 
 getParams :: LexEntry -> String
 getParams e =
-    case (params e) of [] -> ""
-                       _  -> "%("++(unwords $ map (\x -> convertVal x) (params e))++")"
+    case params e of
+     [] -> ""
+     _  -> "%("++(unwords $ map convertVal (params e))++")"
 
 
 convertEqua :: Equa -> String
@@ -105,7 +104,7 @@ convertCoanchor (node,lex,cat) =
 
 convertFS :: FS -> String
 convertFS iface =
-    unwords (map (\x -> convertAttVal x) iface)
+    unwords (map convertAttVal iface)
 
 
 convertAttVal :: AVPair -> String
@@ -119,9 +118,9 @@ convertFil fam fil =
 
 convertSem :: Sem -> String
 convertSem s =
-    concatMap (\x -> convertLit x) s
+    concatMap convertLit s
 
 
 convertLit :: Lit -> String
 convertLit (l,p,as) =
-    convertVal l++":"++convertVal p++"("++(unwords $ map (\x -> convertVal x) as)++") "
+    convertVal l++":"++convertVal p++"("++(unwords $ map convertVal as)++") "
