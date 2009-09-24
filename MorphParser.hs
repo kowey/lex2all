@@ -142,7 +142,7 @@ getCat :: FS -> String
 getCat fs =
     let l = filter (\(x,_) -> x=="pos") fs
 	in if null l then ""
-	   else fromVal $ snd $ head $ l
+	   else fromVal $ snd $ head l
 
 getFeats :: FS -> FS
 getFeats fs =
