@@ -118,11 +118,7 @@ findName x ol =
 
 
 findLatin1 :: [Flag] -> Bool
-findLatin1 ol =
-    let encoding = filter (\x -> x == Recode) ol
-        in if (length encoding) == 1 then True
-           else False
-
+findLatin1 = elem Recode
 
 findVersion :: String
 findVersion = "lexConverter version 2.0 \n\t E. Y. Kow - Y. Parmentier - LORIA 2005 - 2008 \n\n"
