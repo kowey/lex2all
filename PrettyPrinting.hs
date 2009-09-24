@@ -58,8 +58,8 @@ type MPrinters = Dict.Map String MPrettyPrinter
 
 -- dictionaries containing the name of the functions
 prettyLPrinters :: LPrinters
-prettyLPrinters = 
-    Dict.fromList 
+prettyLPrinters =
+    Dict.fromList
 	    [("dyalog",LPrint {
 			       lheader  = headerDya,
 			       lcontent = formatLexDya }),
@@ -79,8 +79,8 @@ prettyLPrinters =
 
 
 prettyMPrinters :: MPrinters
-prettyMPrinters = 
-    Dict.fromList 
+prettyMPrinters =
+    Dict.fromList
 	    [("dyalog",MPrint {
 			       mheader  = morphHeaderDya,
 			       mcontent = formatMorphDya }),

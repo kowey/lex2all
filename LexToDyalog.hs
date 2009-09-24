@@ -52,7 +52,7 @@ formatLexDya lex _ _ fam lem morph =
 
 
 headerDyalog :: String
-headerDyalog = 
+headerDyalog =
     "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\" ?>\n"++"<!DOCTYPE tag SYSTEM \"http://atoll.inria.fr/~clerger/tag.dtd,xml\">\n\n"
 
 
@@ -63,7 +63,7 @@ formatLex lex fam lem morph =
 	in Elem {tag      = "tag",
 		 features = [("axiom","s"),("familyfile",fam),("lemmafile",lem),("lexfile",morph)],
 		 datas    = "",
-		 children = 
+		 children =
 		 map (\x -> formatLexFam x) lexfam }
 
 
@@ -76,7 +76,7 @@ extractLemmaCats l =
 
 -- here we gather some entries according to their lemma and cat
 buildNewLex :: [String] -> [LexEntry] -> [[LexEntry]]
-buildNewLex s lex = 
+buildNewLex s lex =
     map (\y -> filter (\x -> ((lemma x)++(cat x)) == y) lex) s
 
 
@@ -87,7 +87,7 @@ formatLexFam f =
 	in   Elem { tag      = "lemma",
 		    features = [("name",lemma hd),("cat",cat hd)],
 		    datas    = "",
-		    children = 
+		    children =
 		    map (\x -> convertEntry x) f }
 
 convertEntry :: LexEntry -> XMLelem
@@ -95,7 +95,7 @@ convertEntry l =
     Elem {tag      = "anchor",
 	  features = [("tree_id", "family[@name="++(family l)++"]")],
 	  datas    = "",
-	  children = 
+	  children =
 	  (map (\x -> convertEqua (cat l) x) (equations l))++(map (\x -> convertCoanchor x) (coanchors l))}
 
 
@@ -127,8 +127,8 @@ convertVal v =
     case v of Const (x:y:xs) -> Elem {tag      = "vAlt",
 				      features = [],
 				      datas    = "",
-				      children = 
-				      map (\e -> convertVal (Const [e])) (x:y:xs)} 
+				      children =
+				      map (\e -> convertVal (Const [e])) (x:y:xs)}
 	      _ ->
 -- 		  Elem {tag      = "sym",
 -- 			features = [],

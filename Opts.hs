@@ -32,13 +32,13 @@
 module Opts (converterOpts,findFlag,help,findMode,findFormat,findName,findLatin1,findVersion)
 
 where
-    
+
 import System.Console.GetOpt
 import Data.Maybe ( catMaybes )
 import System.IO
 -- for type Flag
 import Dtypes
-    
+
 options :: [OptDescr Flag]
 options =
      [ Option ['v']     ["verbose"] (NoArg Verbose)       "verbose output on stderr"
@@ -55,10 +55,10 @@ options =
      , Option ['o']     ["output"]  (ReqArg Output "FILE")"Output FILE (default: stdout)"
      , Option ['i']     ["input"]   (ReqArg Input "FILE") "Input FILE (default: stdin)"
      ]
-    
-    
+
+
 converterOpts :: String -> [String] -> IO ([Flag], [String])
-converterOpts progname argv = 
+converterOpts progname argv =
     case getOpt Permute options argv of
 				     (o,n,[]  ) -> return (o,n)
 				     (_,_,errs) -> ioError (userError (concat errs ++ usageInfo header options))
@@ -66,7 +66,7 @@ converterOpts progname argv =
 
 
 help :: String -> String
-help pname = 
+help pname =
   usageInfo header options
  where
   header =
@@ -79,10 +79,10 @@ findFlag f ol = elem f ol
 
 
 findMode :: [Flag] -> Char
-findMode ol = 
+findMode ol =
     let mode = filter (\x -> x == LexMode || x== MorphMode) ol
 	in if (length mode) /= 1 then error "Converting mode unknown, -(L|M) must be set. Please type -h (note that only one mode is allowed)"
-	   else let m = (head mode)  
+	   else let m = (head mode)
 		    in case m of LexMode   -> 'L'
 				 MorphMode -> 'M'
 				 _         -> error "error in findMode -(L|M)"
@@ -92,7 +92,7 @@ findFormat :: [Flag] -> String
 findFormat ol =
     let format = filter (\x -> x == DyalogFormat || x== LLP2Format || x== GeniFormat || x== TTMCTAGFormat || x== XMLFormat) ol
 	in if (length format) /= 1 then error "Converting output format unknown, please type -h (note that only one output format is allowed)"
-	   else let f = (head format)  
+	   else let f = (head format)
 		    in case f of DyalogFormat -> "dyalog"
 				 LLP2Format   -> "llp2"
 				 GeniFormat   -> "geni"
@@ -119,7 +119,7 @@ findName x ol =
 
 findLatin1 :: [Flag] -> Bool
 findLatin1 ol =
-    let encoding = filter (\x -> x == Recode) ol 
+    let encoding = filter (\x -> x == Recode) ol
         in if (length encoding) == 1 then True
            else False
 

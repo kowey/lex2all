@@ -51,7 +51,7 @@ formatLexTT lex _ _ fam lem morph =
 
 
 headerTTMCTAG :: String
-headerTTMCTAG = 
+headerTTMCTAG =
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n"++"<!DOCTYPE mcgrammar SYSTEM \"xmg-mctag.dtd,xml\">\n\n"
 
 
@@ -66,7 +66,7 @@ formatLex lex _ _ _ =
                              Elem {tag      = "lemmas",
                                    features = [],
                                    datas    = "",
-                                   children = 
+                                   children =
                                        map (\x -> formatLexFam x) lexfam }
                             ]}
 
@@ -80,7 +80,7 @@ extractLemmaCats l =
 
 -- here we gather some entries according to their lemma and cat
 buildNewLex :: [String] -> [LexEntry] -> [[LexEntry]]
-buildNewLex s lex = 
+buildNewLex s lex =
     map (\y -> filter (\x -> ((lemma x)++(cat x)) == y) lex) s
 
 
@@ -91,7 +91,7 @@ formatLexFam f =
 	in   Elem { tag      = "lemma",
 		    features = [("name",lemma hd),("cat",cat hd)],
 		    datas    = "",
-		    children = 
+		    children =
                     (map (\x -> convertEntry x) f)}
 
 
@@ -100,7 +100,7 @@ convertEntry l =
     Elem {tag      = "anchor",
 	  features = [("tree_id", "family[@name="++(family l)++"]")],
 	  datas    = "",
-	  children = 
+	  children =
 	  [(convertFilter (filters l))]++(map (\x -> convertEqua (cat l) x) (equations l))++(map (\x -> convertCoanchor x) (coanchors l))++[(convertSem (calls l))]}
 
 
@@ -117,7 +117,7 @@ convertSem sem =
     Elem {tag      = "sem",
           features = [],
           datas    = "",
-          children = 
+          children =
           (map (\x -> convertMacro x) sem)}
 
 convertMacro :: MacroCall -> XMLelem
@@ -132,7 +132,7 @@ convertArgs args =
     Elem {tag      = "args",
           features = [],
           datas    = "",
-          children = 
+          children =
           (map (\x -> convertFeat x) args)}
 
 
@@ -141,7 +141,7 @@ convertFS fs =
     Elem {tag      = "fs",
 	  features = [],
 	  datas    = "",
-	  children = 
+	  children =
           (map (\x -> convertFeat x) fs)}
 
 
@@ -180,8 +180,8 @@ convertVal v =
     case v of Const (x:y:xs) -> Elem {tag      = "vAlt",
 				      features = [],
 				      datas    = "",
-				      children = 
-				      map (\e -> convertVal (Const [e])) (x:y:xs)} 
+				      children =
+				      map (\e -> convertVal (Const [e])) (x:y:xs)}
 	      _ ->
 		  Elem {tag      = "sym",
 			features = [("value",show v)],

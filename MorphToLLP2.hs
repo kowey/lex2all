@@ -50,7 +50,7 @@ formatMorphLLP mph _ _ _ _ _ =
 
 
 morphHeaderLLP2 :: String
-morphHeaderLLP2 = 
+morphHeaderLLP2 =
     "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"++"<!DOCTYPE tagml SYSTEM \"tag.dtd\">\n\n"
 
 
@@ -63,7 +63,7 @@ formatMorphLLP2 mph =
               children = [Elem {tag      = "morphLib",
 		                features = [],
 		                datas    = "",
-		                children = 
+		                children =
 		                map (\x -> convertEntry x) lex }]}
 
 
@@ -90,15 +90,15 @@ convertFeat x =
 	  features = [("name",fst x)],
 	  datas    = "",
 	  children = [convertVal (snd x)]}
-	  
+
 
 convertVal :: Val -> XMLelem
 convertVal v =
     case v of Const (x:y:xs) -> Elem {tag      = "vAlt",
 				      features = [],
 				      datas    = "",
-				      children = 
-				      map (\e -> convertVal (Const [e])) (x:y:xs)} 
+				      children =
+				      map (\e -> convertVal (Const [e])) (x:y:xs)}
 	      _ ->
 -- 		  Elem {tag      = "sym",
 -- 			features = [],

@@ -50,11 +50,11 @@ lexer :: TokenParser ()
 lexer  = makeTokenParser
          (emptyDef
 	  { commentLine = "%"
-          , commentStart = "/*" 
+          , commentStart = "/*"
           , commentEnd = "*/"
 	  , identStart = noneOf " \v\f\t\r\n*,.!?;:[]()|<>/%=" --alphaNum <|> oneOf "+-_äüö{"
-	  , identLetter = noneOf " \v\f\t\r\n*,.!?;:[]()|<>/%=" --alphaNum <|> oneOf "-_'+äüö{}" 
-	  , nestedComments = True 
+	  , identLetter = noneOf " \v\f\t\r\n*,.!?;:[]()|<>/%=" --alphaNum <|> oneOf "-_'+äüö{}"
+	  , nestedComments = True
 	  , caseSensitive = True
 	  , reservedNames = ["include","semantics","interface"]
           })
@@ -97,7 +97,7 @@ inclusion = do
 	    return (rootname++"."++extension)
 
 macros :: Parser [SemMacro]
-macros = do 
+macros = do
 	 m <- many macro
 	 eof
 	 return m
@@ -124,21 +124,21 @@ macro = do
 getLit :: Parser Lit
 getLit = do
 	 label <- value <?> "label"
-	 x <- option (Anonymous,[]) getLiteral 
+	 x <- option (Anonymous,[]) getLiteral
 	 let p = fst x
 	     a = snd x
-	 return (label, p ,a) 
+	 return (label, p ,a)
 
 getLiteral :: Parser (Val, [Val])
-getLiteral = do 
-	     symbol ":" 
+getLiteral = do
+	     symbol ":"
 	     pred  <- value <?> "predicate"
-	     args  <- parens (option [] $ sepBy value comma) <?> "arguments" 
+	     args  <- parens (option [] $ sepBy value comma) <?> "arguments"
 	     let lit = (pred, args)
 	     return lit
 
 entry :: Parser LexEntry
-entry = do 
+entry = do
 	let key k = do { symbol ("*"++k)
 		       ; optional space; char ':'; optional spaces }
 	whiteSpace
@@ -150,22 +150,22 @@ entry = do
 	key "FAM"; fam <- identifier <?> "family name"
 	key "FILTERS"; filter <- option [] filParser <?> "filters"
 	key "EX"; option [] (braces (many $ noneOf "{}")) <?> "exceptions" --ignored
-	key "EQUATIONS"; optional newline 
+	key "EQUATIONS"; optional newline
         equations <- option [] getEquations <?> "equations"
 	key "COANCHORS"; optional newline
         coanchors <- option [] getCoanchors <?> "coanchors"
 	return Lex{
-		   lemma = lex, 
-		   cat = cat, 
+		   lemma = lex,
+		   cat = cat,
 		   calls = sem,
 		   params = [],
 		   sem = (convertSem sem),
 		   iface = [],
-		   acc = "", 
-		   family = fam, 
-		   filters = filter, 
-		   except = [], 
-		   equations = equations, 
+		   acc = "",
+		   family = fam,
+		   filters = filter,
+		   except = [],
+		   equations = equations,
 		   coanchors = coanchors
 		   }
 
@@ -209,28 +209,28 @@ convertLit macro =
 -- 	  return (Anonymous, pred, avm)
 
 filParser :: Parser FS
-filParser = do 
-	    fil <- feats <?> "filtering avm" 
+filParser = do
+	    fil <- feats <?> "filtering avm"
 	    return fil
 
 getEquations :: Parser [Equa]
 getEquations = sepBy getEquation whiteSpace
 
 getEquation :: Parser Equa
-getEquation = do 
+getEquation = do
 	      node <- identifier <?> "node name"
 	      symbol "->" <?> "equation"
 	      feat <- getPath <?> "feature path"
 	      symbol "="
 	      val <-  atomicDisj <|> value <?> "feature value"
 	      whiteSpace
-	      return (node, feat, val) 
+	      return (node, feat, val)
 
 getPath :: Parser FeatPath
 getPath = do
           fs <- identifier
           option "" $ symbol "."
-          sn <- option "" $ identifier 
+          sn <- option "" $ identifier
           case sn of "" -> return (sn, fs)
                      _  -> return (fs, sn)
 
@@ -238,25 +238,25 @@ getCoanchors :: Parser [Coanchor]
 getCoanchors = sepBy getCoanchor whiteSpace
 
 getCoanchor :: Parser Coanchor
-getCoanchor = do 
+getCoanchor = do
 	      node <- identifier <?> "node name"
 	      symbol "->" <?> "coanchor"
 	      lex <- identifier <?> "lexical item"
 	      symbol "/"
 	      cat <- identifier <?> "coanchor category"
-	      return (node, lex, cat) 
+	      return (node, lex, cat)
 
 feats :: Parser FS
 feats = option [] $ squares $ sepBy attVal comma
 
 attVal :: Parser AVPair
 attVal = do
-	 att <- identifier <?> "attribute" 
+	 att <- identifier <?> "attribute"
 	 symbol "="
 	 whiteSpace
 	 val <- atomicDisj <|> value <?> "feature value"
 	 whiteSpace
-	 return (att,val) 
+	 return (att,val)
 
 
 -- variables have to begin with "?"
@@ -265,10 +265,10 @@ value = do
 	p <- option ' ' (oneOf "?!")
 	h <- identifier <?> "identifier"
 	let val = if (p) /= '?' then Const ([h])
-		  else Var (h) 
+		  else Var (h)
 	return val
 
 atomicDisj :: Parser Val
-atomicDisj = do 
+atomicDisj = do
 	     values <- identifier `sepBy1` (symbol "|")
 	     return (Const values)

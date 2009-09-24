@@ -49,7 +49,7 @@ instance Show Val where
     show Anonymous  = "_"
 
 valToString :: Val -> String
-valToString x = 
+valToString x =
     case x of Var a     -> a
 	      Anonymous -> "_"
 	      Const [x] -> x
@@ -95,11 +95,11 @@ data LexEntry = Lex{lemma      :: String,
 		deriving (Show, Eq)
 
 instance Ord LexEntry where
-    compare a b = compare (lemma a) (lemma b) 
+    compare a b = compare (lemma a) (lemma b)
 
-emptyLex :: LexEntry  
+emptyLex :: LexEntry
 emptyLex = Lex { lemma     = "",
-                 cat       = "", 
+                 cat       = "",
 		 calls     = [],
 		 params    = [],
                  sem       = [],
@@ -129,7 +129,7 @@ emptySemMacro = Macro { name      = "",
 			semantics = [],
 			interface = [] }
 
--- XML element (ie tag) with attributes (ie features), 
+-- XML element (ie tag) with attributes (ie features),
 -- potential datas and sub-XML elements (ie children)
 data XMLelem = Elem {
 		  tag      :: String,
@@ -146,9 +146,9 @@ data MorphEntry = Morph {
 			 mcat       :: String,
 			 morphFeats :: FS }
 		  deriving (Eq, Show)
-			 
+
 emptyMorph :: MorphEntry
-emptyMorph = Morph { 
+emptyMorph = Morph {
 		    morph      = "",
 		    lem        = "",
 		    mcat       = "",
@@ -158,9 +158,9 @@ instance Ord MorphEntry where
     compare a b = compare (morph a) (morph b)
 
 -- processing of the command line
-data Flag 
+data Flag
     = Verbose  | Help | Version | MorphMode | LexMode | Recode | DyalogFormat
-    | LLP2Format | GeniFormat | TTMCTAGFormat | XMLFormat | Input String | Output String 
+    | LLP2Format | GeniFormat | TTMCTAGFormat | XMLFormat | Input String | Output String
     deriving (Eq, Show)
 
 type HandleOrPath = Either Handle FilePath

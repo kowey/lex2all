@@ -52,7 +52,7 @@ formatLexLLP lex time file _ _ _ =
 
 
 headerLLP2 :: String
-headerLLP2 = 
+headerLLP2 =
     "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"++"<!DOCTYPE tagml SYSTEM \"tag.dtd\">\n\n"
 
 
@@ -60,7 +60,7 @@ formatLexLLP2 :: [LexEntry] -> ClockTime -> String -> XMLelem
 formatLexLLP2 lex t file =
     let entries = sort lex
 	time = calendarTimeToString (toUTCTime t)
-	in 
+	in
 	Elem {tag      = "tagml",
 	      features = [],
 	      datas    = "",
@@ -83,7 +83,7 @@ formatLexLLP2 lex t file =
 			  Elem {tag      = "lexicalizationLib",
 				features = [("id",file)],
 				datas    = "",
-				children = 
+				children =
 				map (\x -> formatLexEnt x) entries }]}
 
 
@@ -93,8 +93,8 @@ formatLexEnt e =
     Elem { tag      = "lexicalization",
 	   features = [],
 	   datas    = "",
-	   children = 
-	   [Elem {tag      = "tree", 
+	   children =
+	   [Elem {tag      = "tree",
 		  features = [],
 		  datas    = "",
 		  children = [Elem {tag      = "fs",
@@ -154,8 +154,8 @@ convertVal v =
     case v of Const (x:y:xs) -> Elem {tag      = "vAlt",
 				      features = [],
 				      datas    = "",
-				      children = 
-				      map (\e -> convertVal (Const [e])) (x:y:xs)} 
+				      children =
+				      map (\e -> convertVal (Const [e])) (x:y:xs)}
 	      _ ->
 -- 		  Elem {tag      = "sym",
 -- 			features = [],

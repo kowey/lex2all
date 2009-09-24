@@ -56,7 +56,7 @@ formatMorph mph _ _ _ =
                                    datas    = "",
                                    children = map (\x -> convertEntry x) lex }
                             ]}
-                            
+
 
 convertEntry :: MorphEntry -> XMLelem
 convertEntry e =
@@ -80,15 +80,15 @@ convertFeat x =
 	  features = [("name",fst x)],
 	  datas    = "",
 	  children = [convertVal (snd x)]}
-	  
+
 
 convertVal :: Val -> XMLelem
 convertVal v =
     case v of Const (x:y:xs) -> Elem {tag      = "vAlt",
 				      features = [],
 				      datas    = "",
-				      children = 
-				      map (\e -> convertVal (Const [e])) (x:y:xs)} 
+				      children =
+				      map (\e -> convertVal (Const [e])) (x:y:xs)}
 	      _ ->
 -- 		  Elem {tag      = "sym",
 -- 			features = [],

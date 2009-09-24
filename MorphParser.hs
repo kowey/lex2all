@@ -49,11 +49,11 @@ lexer :: TokenParser ()
 lexer  = makeTokenParser
          (emptyDef
 	  { commentLine = "%"
-          , commentStart = "/*" 
+          , commentStart = "/*"
           , commentEnd = "*/"
 	  , identStart = noneOf " \v\f\t\r\n*,.!?;:[]()|<>/%=" --alphaNum <|> oneOf "+-_äüöß=#^{"
 	  , identLetter = noneOf " \v\f\t\r\n*,.!?;:[]()|<>/%=" --alphaNum <|> oneOf "-_'+.äüöß=#^{}"
-	  , nestedComments = True 
+	  , nestedComments = True
 	  , caseSensitive = True
 	  , reservedNames = ["include"]
           })
@@ -90,24 +90,24 @@ inclusion = do
 	    return name
 
 included :: Parser [MorphEntry]
-included = do 
+included = do
 	   e <- many entry
 	   eof
 	   return e
 
 entry :: Parser MorphEntry
-entry = do 
+entry = do
 	morph <- identifier <?> "morphological item"
 	spaces
 	lemma <- identifier <?> "lemma"
 	spaces
 	feats <- morphofeats <?> "morphological features (AVM)"
 	option ' ' newline
-	let cat = getCat feats 
+	let cat = getCat feats
 	    mfeats = getFeats feats
 	return Morph{morph      = morph,
-		     lem        = lemma, 
-		     mcat       = cat, 
+		     lem        = lemma,
+		     mcat       = cat,
 		     morphFeats = mfeats
 		    }
 
@@ -117,10 +117,10 @@ morphofeats = option [] $ squares $ sepEndBy getAttVal semi
 
 getAttVal :: Parser AVPair
 getAttVal = do
-	    att <- identifier <?> "attribute" 
+	    att <- identifier <?> "attribute"
 	    symbol "="
 	    whiteSpace
-	    val <- atomicDisj <|> value <?> "feature value" 
+	    val <- atomicDisj <|> value <?> "feature value"
 	    whiteSpace
 	    return (att, val)
 
@@ -134,7 +134,7 @@ value = do
 	return val
 
 atomicDisj :: Parser Val
-atomicDisj = do 
+atomicDisj = do
 	     values <- option [] $ (identifier <?> "identifier") `sepBy1` (symbol "|")
 	     return (Const values)
 
