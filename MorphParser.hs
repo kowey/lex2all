@@ -86,8 +86,7 @@ morphParserSuite suite pos = do
 inclusion :: Parser String
 inclusion = do
 	    reserved "include"
-	    name <- identifier <?> "file name"
-	    return name
+	    identifier <?> "file name"
 
 included :: Parser [MorphEntry]
 included = do
