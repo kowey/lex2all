@@ -1,5 +1,5 @@
 name:                lex2all
-version:             2.1
+version:             2.1.1
 synopsis:            Converter between various lexicon formats used for NLP
 description:         Converter between various lexicon formats used for Natural Language Processing,
                      (both parsing and generation).
