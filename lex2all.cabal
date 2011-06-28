@@ -16,11 +16,11 @@ license:             GPL
 license-file:        License-en
 author:              Yannick Parmentier
 maintainer:          <Yannick.Parmentier@loria.fr>
-build-Depends:       base < 4
-                   , containers > 0.1 && < 0.3
-                   , filepath > 1.0   && < 1.2
+build-Depends:       base < 5 
+                   , containers > 0.1 && < 0.5
+                   , filepath > 1.0   && < 1.3
                    , old-time  > 1.0  && < 1.1
-                   , parsec > 2.0     && < 3
+                   , parsec > 2.0     && < 3.2
                    , utf8-string >= 0.3 && < 0.4
 
 build-Type:          Simple
