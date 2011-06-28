@@ -36,7 +36,11 @@ where
 -- parser and scanner definitions
 import Text.ParserCombinators.Parsec
 import Text.ParserCombinators.Parsec.Language (emptyDef)
-import Text.ParserCombinators.Parsec.Token (TokenParser, LanguageDef(..), makeTokenParser)
+import Text.ParserCombinators.Parsec.Token (TokenParser, LanguageDef(..), makeTokenParser
+                                           , commentStart, commentEnd, commentLine, nestedComments
+                                           , identStart, identLetter
+                                           , caseSensitive
+                                           , reservedNames)
 import qualified Text.ParserCombinators.Parsec.Token as P
 
 import Text.ParserCombinators.Parsec.Pos (SourcePos)
