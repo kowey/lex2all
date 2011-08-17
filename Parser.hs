@@ -152,7 +152,7 @@ entry = do
 	key "SEM"; sem <- option [] semParser <?> "semantic macro instanciation"
         optional lambda
 	key "ACC"; optional natural <?> "acception" --ignored
-	key "FAM"; fam <- stringLiteral <|> identifier <?> "family name"
+	key "FAM"; fam <- identifier <?> "family name"
 	key "FILTERS"; filter <- option [] filParser <?> "filters"
 	key "EX"; option [] (braces (many $ noneOf "{}")) <?> "exceptions" --ignored
 	key "EQUATIONS"; optional newline
