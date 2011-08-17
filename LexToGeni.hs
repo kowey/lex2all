@@ -59,7 +59,7 @@ formatLexGeni = concatMap convertEntry . sort
 convertEntry :: LexEntry -> String
 convertEntry e =
     unwords [ quoteString (lemma e)
-            , quoteString (family e)
+            , family e
             , getParams e
             ] ++ "\n"
     ++"equations:["
