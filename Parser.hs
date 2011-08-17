@@ -67,6 +67,7 @@ lexer  = makeTokenParser
 
 whiteSpace = P.whiteSpace lexer
 identifier = P.identifier lexer
+stringLiteral = P.stringLiteral lexer
 natural   = P.natural lexer
 squares   = P.squares lexer
 symbol    = P.symbol  lexer
@@ -146,12 +147,12 @@ entry = do
 	let key k = do { symbol ("*"++k)
 		       ; optional space; char ':'; optional spaces }
 	whiteSpace
-	key "ENTRY"; lex <- identifier <?> "lemma"
+	key "ENTRY"; lex <- stringLiteral <|> identifier <?> "lemma"
 	key "CAT"; cat <- identifier <?> "category"
 	key "SEM"; sem <- option [] semParser <?> "semantic macro instanciation"
         optional lambda
 	key "ACC"; optional natural <?> "acception" --ignored
-	key "FAM"; fam <- identifier <?> "family name"
+	key "FAM"; fam <- stringLiteral <|> identifier <?> "family name"
 	key "FILTERS"; filter <- option [] filParser <?> "filters"
 	key "EX"; option [] (braces (many $ noneOf "{}")) <?> "exceptions" --ignored
 	key "EQUATIONS"; optional newline
