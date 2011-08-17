@@ -58,7 +58,10 @@ formatLexGeni = concatMap convertEntry . sort
 
 convertEntry :: LexEntry -> String
 convertEntry e =
-    lemma e ++" "++ family e ++"  "++ getParams e ++"\n"
+    unwords [ quoteString (lemma e)
+            , quoteString (family e)
+            , getParams e
+            ] ++ "\n"
     ++"equations:["
     ++ concatMap convertEqua (equations e)
     ++ concatMap convertCoanchor (coanchors e)
@@ -115,7 +118,13 @@ convertFil fam fil =
 convertSem :: Sem -> String
 convertSem = concatMap convertLit
 
-
 convertLit :: Lit -> String
 convertLit (l,p,as) =
     convertVal l++":"++convertVal p++"("++(unwords $ map convertVal as)++") "
+
+quoteString :: String -> String
+quoteString x = "\"" ++ concatMap convert x ++ "\""
+ where
+  convert '"'  = ['\\','"']
+  convert '\\' = ['\\','\\']
+  convert x    = [x]
