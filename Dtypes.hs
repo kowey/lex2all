@@ -51,9 +51,9 @@ instance Show Val where
 valToString :: Val -> String
 valToString x =
     case x of Var a     -> a
-	      Anonymous -> "_"
-	      Const [x] -> x
-	      _         -> error "Not a single value"
+              Anonymous -> "_"
+              Const [x] -> x
+              _         -> error "Not a single value"
 
 -- Feature Structures
 type FS   = [AVPair]
