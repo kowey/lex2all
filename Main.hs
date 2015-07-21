@@ -131,8 +131,8 @@ parseLexicon p suite pos fileName =
 					  Right x  -> x
 
 
-printList :: Show a => [a] -> IO [()]
-printList l = mapM (\x -> hPutStr stderr ((show x)++"\n")) l
+printList :: Show a => [a] -> IO ()
+printList = mapM_ (hPrint stderr)
 
 
 convertLex :: String -> Bool -> String -> String -> String -> String -> FilePath -> ClockTime -> IO() --Handle -> ClockTime -> IO()
