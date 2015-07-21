@@ -34,12 +34,12 @@ module Main (main)
 where
 
 -- for command line options and time
-import System.Environment (getArgs, getProgName)
+import System.Environment (getArgs, getEnv, getProgName)
 import System.Time
 import Opts
 import System.IO
 -- for exiting
-import System.Exit (ExitCode(ExitSuccess), exitWith)
+import System.Exit (exitSuccess)
 import Text.Printf
 -- for parsec
 import Text.ParserCombinators.Parsec
@@ -61,7 +61,6 @@ import Control.Exception
 import qualified System.IO.UTF8 as U
 
 import System.FilePath ( takeDirectory, isAbsolute )
-import System.Environment ( getEnv )
 
 main :: IO ()
 main = do
@@ -75,13 +74,13 @@ main = do
        let version    = findFlag Version ol
        if needHelp then do
                         hPutStr stderr (help pname)
-                        exitWith ExitSuccess
+                        exitSuccess
           else
             if version then do
                             hPutStr stderr findVersion
-                            exitWith ExitSuccess
+                            exitSuccess
             else do
-                 curdir <- getEnv ("PWD")
+                 curdir <- getEnv "PWD"
                  let outputfile  = findName "output" ol
                      inputfile   = findName "input" ol
                      mode        = findMode ol
@@ -93,31 +92,30 @@ main = do
                      realOut     = case outputfile of Left _ -> "stdout"
                                                       Right f -> f
                  time <- getClockTime
-                 input <- if (option == "tulipa" && (not recodeLatin1)) then U.readFile file
+                 input <- if option == "tulipa" && not recodeLatin1 then U.readFile file
                           else readFile file
                  case mode of 'L' -> convertLex dir verbose pname option file input realOut time
                               'M' -> convertMorph dir verbose pname option file input realOut time
                               _   -> error "unknown mode, either -L or -M must be set. Please use option -h."
-                 case verbose of True  -> hPutStr stderr "Done\n"
-                                 False -> exitWith ExitSuccess
-                 exitWith ExitSuccess
+                 when verbose $ hPutStrLn stderr "Done"
+                 exitSuccess
 
 
 toAbsolutePath :: FilePath -> FilePath -> FilePath
 toAbsolutePath _ "" = ""
 toAbsolutePath parent path =
-    if (isAbsolute path) then path else parent ++ "/" ++ path
+    if isAbsolute path then path else parent ++ "/" ++ path
 
 
 parseInclude :: Parser ([Char], SourcePos, [String]) -> FilePath -> String -> ([Char], SourcePos, [String])
 parseInclude p fileName input = case (parse p fileName input) of
-                                Left err -> ([],initialPos fileName,[(show err)])
+                                Left err -> ([],initialPos fileName,[show err])
                                 Right x -> x
 
 
 parseIncluded :: Parser [a] -> [String] -> [[Char]] -> [a]
 parseIncluded p fileNames fileContents =
-    let parser pa file content = case (parse pa file content) of
+    let parser pa file content = case parse pa file content of
                                  Left err ->  error (show err)
                                  Right x -> x
         in concat (zipWith (parser p) fileNames fileContents)
@@ -125,10 +123,10 @@ parseIncluded p fileNames fileContents =
 
 parseLexicon :: ([Char] -> SourcePos -> Parser a) -> [Char] -> SourcePos -> FilePath -> a
 parseLexicon p suite pos fileName =
-    let parser = (p suite pos)
+    let parser = p suite pos
     in case (parse parser fileName suite) of
-                                          Left err -> error (show err)
-                                          Right x  -> x
+       Left err -> error (show err)
+       Right x  -> x
 
 
 printList :: Show a => [a] -> IO ()
@@ -136,28 +134,26 @@ printList = mapM_ (hPrint stderr)
 
 
 convertLex :: String -> Bool -> String -> String -> String -> String -> FilePath -> ClockTime -> IO() --Handle -> ClockTime -> IO()
-convertLex dir verbose pname option file input ohandle time =
-    do
-    let (suite,pos,files) = (parseInclude parserHeader file input)
-    contents <- mapM (readFile.(toAbsolutePath dir)) files
+convertLex dir verbose pname option file input ohandle time = do
+    let (suite, pos, files) = parseInclude parserHeader file input
+    contents <- mapM (readFile . toAbsolutePath dir) files
     let semMac = (parseIncluded macros files contents)
     --if verbose then printList semMac else hPrintf stderr "%s" ""
     let lexicon = (parseLexicon parserSuite suite pos file)
     --if verbose then printList lexicon else hPrintf stderr "%s" ""
-    let realLexicon = if semMac /= [] then (evalueSemLex lexicon (macrosToDict semMac))
+    let realLexicon = if semMac /= [] then evalueSemLex lexicon (macrosToDict semMac)
                       else lexicon
     if verbose then printList realLexicon else hPrintf stderr "%s" ""
     let printers = prettyLPrinters Dict.! option
-        reslex   = ((lheader printers) time pname)++((lcontent printers) realLexicon time file "trees.xml" "lemma.xml" "lexicon.xml")
+        reslex   = lheader printers time pname ++ lcontent printers realLexicon time file "trees.xml" "lemma.xml" "lexicon.xml"
     --hPutStr ohandle reslex
     writeFileFor option ohandle reslex
 
 
 convertMorph :: String -> Bool -> String -> String -> String -> String -> FilePath -> ClockTime -> IO() --Handle -> ClockTime -> IO ()
-convertMorph dir verbose pname option file input ohandle time =
-    do
-    let (suite,pos,files) = (parseInclude morphParserHeader file input)
-    contents <- mapM (readFile.(toAbsolutePath dir)) files
+convertMorph dir verbose pname option file input ohandle time = do
+    let (suite, pos, files) = parseInclude morphParserHeader file input
+    contents <- mapM (readFile . toAbsolutePath dir) files
     let inclu = (parseIncluded included files contents)
         lexicon = (parseLexicon morphParserSuite suite pos file)
         realLexicon = (inclu++lexicon)
@@ -166,7 +162,7 @@ convertMorph dir verbose pname option file input ohandle time =
     if option == "geni" then throwIO (RecSelError "Morphological lexicon -> no printer available yet for the geni format")
        else
        let printers = prettyMPrinters Dict.! option
-           reslex   = ((mheader printers) time pname)++((mcontent printers) realLexicon time file "trees.xml" "lemma.xml" "lexicon.xml")
+           reslex   = mheader printers time pname ++ mcontent printers realLexicon time file "trees.xml" "lemma.xml" "lexicon.xml"
            in --hPutStr ohandle reslex
               writeFileFor option ohandle reslex
 
