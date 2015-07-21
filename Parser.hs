@@ -68,6 +68,7 @@ lexer  = makeTokenParser
 whiteSpace = P.whiteSpace lexer
 identifier = P.identifier lexer
 stringLiteral = P.stringLiteral lexer
+float     = P.float lexer
 natural   = P.natural lexer
 squares   = P.squares lexer
 symbol    = P.symbol  lexer
@@ -151,7 +152,7 @@ entry = do
 	key "CAT"; cat <- identifier <?> "category"
 	key "SEM"; sem <- option [] semParser <?> "semantic macro instanciation"
         optional lambda
-	key "ACC"; optional natural <?> "acception" --ignored
+        key "ACC"; acc <- float <?> "acception"
 	key "FAM"; fam <- identifier <?> "family name"
 	key "FILTERS"; filter <- option [] filParser <?> "filters"
 	key "EX"; option [] (braces (many $ noneOf "{}")) <?> "exceptions" --ignored
@@ -166,7 +167,7 @@ entry = do
 		   params = [],
 		   sem = (convertSem sem),
 		   iface = [],
-		   acc = "",
+                   acc = Just acc,
 		   family = fam,
 		   filters = filter,
 		   except = [],
