@@ -53,14 +53,14 @@ import Dtypes
 lexer :: TokenParser ()
 lexer  = makeTokenParser
          (emptyDef
-	  { commentLine = "%"
+          { commentLine = "%"
           , commentStart = "/*"
           , commentEnd = "*/"
-	  , identStart = noneOf " \v\f\t\r\n*,.!?;:[]()|<>/%=" --alphaNum <|> oneOf "+-_äüö{"
-	  , identLetter = noneOf " \v\f\t\r\n*,.!?;:[]()|<>/%=" --alphaNum <|> oneOf "-_'+äüö{}"
-	  , nestedComments = True
-	  , caseSensitive = True
-	  , reservedNames = ["include","semantics","interface"]
+          , identStart = noneOf " \v\f\t\r\n*,.!?;:[]()|<>/%=" --alphaNum <|> oneOf "+-_äüö{"
+          , identLetter = noneOf " \v\f\t\r\n*,.!?;:[]()|<>/%=" --alphaNum <|> oneOf "-_'+äüö{}"
+          , nestedComments = True
+          , caseSensitive = True
+          , reservedNames = ["include","semantics","interface"]
           })
 
 -- Should "." be part of identLetter ? it was used to deal with file names
@@ -80,100 +80,100 @@ parens    = P.parens lexer
 
 parserHeader :: Parser ([Char], SourcePos, [String])
 parserHeader = do
-	       m <- many inclusion
-	       pos <- getPosition
-	       suite <- getInput
-	       return (suite,pos,m)
+               m <- many inclusion
+               pos <- getPosition
+               suite <- getInput
+               return (suite,pos,m)
 
 parserSuite :: [Char] -> SourcePos -> Parser [LexEntry]
 parserSuite suite pos = do
-			setPosition pos
-			setInput suite
-			l <- many entry
+                        setPosition pos
+                        setInput suite
+                        l <- many entry
                         whiteSpace
-			eof
-			return l
+                        eof
+                        return l
 
 inclusion :: Parser String
 inclusion = do
-	    reserved "include"
-	    rootname <- identifier <?> "file name (without extension)"
+            reserved "include"
+            rootname <- identifier <?> "file name (without extension)"
             char '.'
             extension <- identifier <?> "file extension"
-	    return (rootname++"."++extension)
+            return (rootname++"."++extension)
 
 macros :: Parser [SemMacro]
 macros = do
-	 m <- many macro
-	 eof
-	 return m
+         m <- many macro
+         eof
+         return m
 
 macro :: Parser SemMacro
 macro = do
-	name <- identifier <?> "macro name"
-	args <- feats <?> "macro arguments"
-	whiteSpace
-	reserved "semantics"
-	symbol ":"
-	semantics <- squares (option [] $ sepEndBy getLit whiteSpace) <?> "semantic literals"
-	whiteSpace
-	reserved "interface"
-	symbol ":"
-	interface <- feats <?> "interface avm"
-	return Macro {
-		      name = name,
-		      args = args,
-		      semantics = semantics,
-		      interface = interface
-		     }
+        name <- identifier <?> "macro name"
+        args <- feats <?> "macro arguments"
+        whiteSpace
+        reserved "semantics"
+        symbol ":"
+        semantics <- squares (option [] $ sepEndBy getLit whiteSpace) <?> "semantic literals"
+        whiteSpace
+        reserved "interface"
+        symbol ":"
+        interface <- feats <?> "interface avm"
+        return Macro {
+                      name = name,
+                      args = args,
+                      semantics = semantics,
+                      interface = interface
+                     }
 
 getLit :: Parser Lit
 getLit = do
-	 label <- value <?> "label"
-	 x <- option (Anonymous,[]) getLiteral
-	 let p = fst x
-	     a = snd x
-	 return (label, p ,a)
+         label <- value <?> "label"
+         x <- option (Anonymous,[]) getLiteral
+         let p = fst x
+             a = snd x
+         return (label, p ,a)
 
 getLiteral :: Parser (Val, [Val])
 getLiteral = do
-	     symbol ":"
-	     pred  <- value <?> "predicate"
-	     args  <- parens (option [] $ sepBy value comma) <?> "arguments"
-	     let lit = (pred, args)
-	     return lit
+             symbol ":"
+             pred  <- value <?> "predicate"
+             args  <- parens (option [] $ sepBy value comma) <?> "arguments"
+             let lit = (pred, args)
+             return lit
 
 entry :: Parser LexEntry
 entry = do
-	let key k = do { symbol ("*"++k)
-		       ; optional space; char ':'; optional spaces }
-	whiteSpace
-	key "ENTRY"; lex <- stringLiteral <|> identifier <?> "lemma"
-	key "CAT"; cat <- identifier <?> "category"
-	key "SEM"; sem <- option [] semParser <?> "semantic macro instanciation"
+        let key k = do { symbol ("*"++k)
+                       ; optional space; char ':'; optional spaces }
+        whiteSpace
+        key "ENTRY"; lex <- stringLiteral <|> identifier <?> "lemma"
+        key "CAT"; cat <- identifier <?> "category"
+        key "SEM"; sem <- option [] semParser <?> "semantic macro instanciation"
         optional lambda
         key "ACC"; acc <- float <?> "acception"
-	key "FAM"; fam <- identifier <?> "family name"
-	key "FILTERS"; filter <- option [] filParser <?> "filters"
-	key "EX"; option [] (braces (many $ noneOf "{}")) <?> "exceptions" --ignored
-	key "EQUATIONS"; optional newline
+        key "FAM"; fam <- identifier <?> "family name"
+        key "FILTERS"; filter <- option [] filParser <?> "filters"
+        key "EX"; option [] (braces (many $ noneOf "{}")) <?> "exceptions" --ignored
+        key "EQUATIONS"; optional newline
         equations <- option [] getEquations <?> "equations"
-	key "COANCHORS"; optional newline
+        key "COANCHORS"; optional newline
         coanchors <- option [] getCoanchors <?> "coanchors"
-	return Lex{
-		   lemma = lex,
-		   cat = cat,
-		   calls = sem,
-		   params = [],
-		   sem = (convertSem sem),
-		   iface = [],
+        return Lex{
+                   lemma = lex,
+                   cat = cat,
+                   calls = sem,
+                   params = [],
+                   sem = (convertSem sem),
+                   iface = [],
                    acc = Just acc,
-		   family = fam,
-		   filters = filter,
-		   except = [],
-		   equations = equations,
-		   coanchors = coanchors
-		   }
+                   family = fam,
+                   filters = filter,
+                   except = [],
+                   equations = equations,
+                   coanchors = coanchors
+                   }
 
 lambda :: Parser ()
 lambda = try (
@@ -186,14 +186,14 @@ lambda = try (
 
 semParser :: Parser SemCall
 semParser = do
-	    s <- many semCall
-	    return s
+            s <- many semCall
+            return s
 
 semCall :: Parser MacroCall
 semCall = do
-	  macro <- identifier <?> "macro name"
-	  avm <- feats <?> "macro arguments (avm)"
-	  return (macro,avm)
+          macro <- identifier <?> "macro name"
+          avm <- feats <?> "macro arguments (avm)"
+          return (macro,avm)
 
 convertSem :: SemCall -> Sem
 convertSem semcall =
@@ -210,27 +210,27 @@ convertLit macro =
 
 -- semLit :: Parser [Lit]
 -- semLit = do
--- 	  pred <- identifier <?> "pred name"
--- 	  avm <- feats <?> "pred arguments (avm)"
--- 	  return (Anonymous, pred, avm)
+--           pred <- identifier <?> "pred name"
+--           avm <- feats <?> "pred arguments (avm)"
+--           return (Anonymous, pred, avm)
 
 filParser :: Parser FS
 filParser = do
-	    fil <- feats <?> "filtering avm"
-	    return fil
+            fil <- feats <?> "filtering avm"
+            return fil
 
 getEquations :: Parser [Equa]
 getEquations = sepBy getEquation whiteSpace
 
 getEquation :: Parser Equa
 getEquation = do
-	      node <- identifier <?> "node name"
-	      symbol "->" <?> "equation"
-	      feat <- getPath <?> "feature path"
-	      symbol "="
-	      val <-  atomicDisj <|> value <?> "feature value"
-	      whiteSpace
-	      return (node, feat, val)
+              node <- identifier <?> "node name"
+              symbol "->" <?> "equation"
+              feat <- getPath <?> "feature path"
+              symbol "="
+              val <-  atomicDisj <|> value <?> "feature value"
+              whiteSpace
+              return (node, feat, val)
 
 getPath :: Parser FeatPath
 getPath = do
@@ -245,36 +245,36 @@ getCoanchors = sepBy getCoanchor whiteSpace
 
 getCoanchor :: Parser Coanchor
 getCoanchor = do
-	      node <- identifier <?> "node name"
-	      symbol "->" <?> "coanchor"
-	      lex <- identifier <?> "lexical item"
-	      symbol "/"
-	      cat <- identifier <?> "coanchor category"
-	      return (node, lex, cat)
+              node <- identifier <?> "node name"
+              symbol "->" <?> "coanchor"
+              lex <- identifier <?> "lexical item"
+              symbol "/"
+              cat <- identifier <?> "coanchor category"
+              return (node, lex, cat)
 
 feats :: Parser FS
 feats = option [] $ squares $ sepBy attVal comma
 
 attVal :: Parser AVPair
 attVal = do
-	 att <- identifier <?> "attribute"
-	 symbol "="
-	 whiteSpace
-	 val <- atomicDisj <|> value <?> "feature value"
-	 whiteSpace
-	 return (att,val)
+         att <- identifier <?> "attribute"
+         symbol "="
+         whiteSpace
+         val <- atomicDisj <|> value <?> "feature value"
+         whiteSpace
+         return (att,val)
 
 
 -- variables have to begin with "?"
 value :: Parser Val
 value = do
-	p <- option ' ' (oneOf "?!")
-	h <- identifier <?> "identifier"
-	let val = if (p) /= '?' then Const ([h])
-		  else Var (h)
-	return val
+        p <- option ' ' (oneOf "?!")
+        h <- identifier <?> "identifier"
+        let val = if (p) /= '?' then Const ([h])
+                  else Var (h)
+        return val
 
 atomicDisj :: Parser Val
 atomicDisj = do
-	     values <- identifier `sepBy1` (symbol "|")
-	     return (Const values)
+             values <- identifier `sepBy1` (symbol "|")
+             return (Const values)
