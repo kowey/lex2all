@@ -20,11 +20,7 @@ Requirement
 Installation
 ------------
 
-- just invoke the following:
-$ chmod u+x install.sh
-$ ./install.sh
-
-This script will check whether cabal is already installed, otherwise it will install it and then install lexConverter.
+    cabal install
 
 Usage
 -----
